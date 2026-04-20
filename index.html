@@ -65,14 +65,12 @@ main{max-width:1180px;margin:0 auto;padding:32px 24px 60px}
 .adv-row{display:flex;align-items:flex-start;gap:8px;padding:6px 0}
 .adv-lbl{flex:1;font-size:12.5px;color:var(--td)}
 .adv-lbl small{display:block;font-size:11px;color:var(--mu);margin-top:1px}
-.adv-right{display:flex;flex-direction:column;align-items:flex-end;gap:5px}
-.adv-tog{display:flex;border:1px solid var(--gb);border-radius:5px;overflow:hidden;height:26px}
-.adv-tog button{padding:0 9px;border:none;background:#ffffff;font-family:'Arimo',sans-serif;font-size:12px;cursor:pointer;color:var(--mu);transition:background .12s,color .12s}
-.adv-tog button.active{background:var(--navy);color:#fff}
-.adv-irow{display:flex;align-items:center;gap:4px}
-.adv-pfx{font-size:12.5px;color:var(--mu)}
-.adv-irow input{width:70px;padding:5px 7px;border:1px solid var(--gb);border-radius:5px;font-family:'Arimo',sans-serif;font-size:12.5px;text-align:right;outline:none}
-.adv-irow input:focus{border-color:var(--teal)}
+.adv-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.adv-ctrl{display:flex;align-items:center;gap:4px}
+.adv-sel{padding:5px 6px;border:1px solid var(--gb);border-radius:5px;font-family:'Arimo',sans-serif;font-size:12px;outline:none;background:#fff;color:var(--td);cursor:pointer;width:46px}
+.adv-sel:focus{border-color:var(--teal)}
+.adv-ctrl input{width:70px;padding:5px 7px;border:1px solid var(--gb);border-radius:5px;font-family:'Arimo',sans-serif;font-size:12.5px;text-align:right;outline:none}
+.adv-ctrl input:focus{border-color:var(--teal)}
 .adv-ap{font-size:11px;color:var(--mu);text-align:right}
 .card-tot{margin-top:11px;padding-top:9px;border-top:2px solid var(--navy)}
 .card-tot.rec{border-color:var(--teal)}
@@ -405,12 +403,11 @@ function buildCard(arr) {
       <div class="adv-row">
         <div class="adv-lbl">Advice fee<small>Ongoing adviser charge</small></div>
         <div class="adv-right">
-          <div class="adv-tog" id="atog-${arr.id}">
-            <button class="active" data-mode="pct" data-id="${arr.id}">%</button>
-            <button data-mode="gbp" data-id="${arr.id}">£</button>
-          </div>
-          <div class="adv-irow">
-            <span class="adv-pfx" id="apfx-${arr.id}">%</span>
+          <div class="adv-ctrl">
+            <select class="adv-sel" id="amode-${arr.id}">
+              <option value="pct">%</option>
+              <option value="gbp">&#163;</option>
+            </select>
             <input type="number" id="adv-${arr.id}" value="${arr.advice}" step="0.01" min="0">
           </div>
           <div class="adv-ap" id="adv-ap-${arr.id}"></div>
@@ -425,14 +422,14 @@ function buildCard(arr) {
       </div>
     </div>`;
 
-  // advice toggle buttons
-  d.querySelectorAll('.adv-tog button').forEach(btn => {
-    btn.addEventListener('click', () => setMode(parseInt(btn.dataset.id), btn.dataset.mode));
-  });
+  // advice mode select
+  const selEl = d.querySelector('.adv-sel');
+  if (selEl) selEl.addEventListener('change', () => setMode(arr.id, selEl.value));
   // remove button
   d.querySelector('.rm-btn').addEventListener('click', e => removeArr(parseInt(e.target.dataset.id)));
-  // all numeric inputs
+  // all numeric inputs and selects
   d.querySelectorAll('input').forEach(el => el.addEventListener('input', recalc));
+  d.querySelectorAll('select').forEach(el => el.addEventListener('change', recalc));
   return d;
 }
 
@@ -471,17 +468,14 @@ function setMode(id, mode) {
   const arr = [...state.cur,...state.rec].find(a => a.id === id);
   if (!arr) return;
   arr.adviceMode = mode;
-  const tog = $('atog-' + id);
-  tog.querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
-  const pfx = $('apfx-' + id);
-  const inp = $('adv-'  + id);
+  const sel = $('amode-' + id);
+  if (sel) sel.value = mode;
+  const inp = $('adv-' + id);
   const fv  = parseFloat($('val-' + id)?.value) || 0;
   if (mode === 'pct') {
-    pfx.textContent = '%';
     inp.value = fv > 0 ? parseFloat((parseFloat(inp.value) / fv * 100).toFixed(2)) : 0.75;
     inp.step  = '0.01';
   } else {
-    pfx.textContent = '£';
     inp.value = Math.round(fv * parseFloat(inp.value) / 100) || 1000;
     inp.step  = '100';
   }
@@ -494,9 +488,10 @@ function calcArr(id) {
   const im     = parseFloat($('im-'   + id)?.value) || 0;
   const fund   = parseFloat($('fund-' + id)?.value) || 0;
   const advRaw = parseFloat($('adv-'  + id)?.value) || 0;
-  const arr    = [...state.cur,...state.rec].find(a => a.id === id) || {};
+  const modeEl = $('amode-' + id);
+  const advMode = modeEl ? modeEl.value : 'pct';
   let advPct, advGbp;
-  if (arr.adviceMode === 'gbp') {
+  if (advMode === 'gbp') {
     advGbp = advRaw;
     advPct = fv > 0 ? advGbp / fv * 100 : 0;
   } else {
@@ -513,8 +508,9 @@ function updateCard(id, c) {
   set('plat-ap-'+id, c.fv > 0 ? fmt(c.fv * c.plat / 100) : '');
   set('im-ap-'  +id, c.fv > 0 ? fmt(c.fv * c.im   / 100) : '');
   set('fund-ap-'+id, c.fv > 0 ? fmt(c.fv * c.fund / 100) : '');
-  const arr = [...state.cur,...state.rec].find(a => a.id === id) || {};
-  set('adv-ap-' +id, c.fv > 0 ? (arr.adviceMode === 'pct' ? fmt(c.advGbp) : fmtP(c.advPct)) : '');
+  const modeEl = $('amode-' + id);
+  const mode = modeEl ? modeEl.value : 'pct';
+  set('adv-ap-' +id, c.fv > 0 ? (mode === 'pct' ? fmt(c.advGbp) : fmtP(c.advPct)) : '');
   set('ctv-'+id,  fmt(c.totalGbp));
   set('ctp-'+id,  '(' + fmtP(c.totalPct) + ' p.a.)');
   set('ctbk-'+id, `Platform ${fmtP(c.plat)} · IM ${fmtP(c.im)} · Funds ${fmtP(c.fund)} · Advice ${fmtP(c.advPct)}`);
