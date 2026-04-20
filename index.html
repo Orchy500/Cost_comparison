@@ -6,7 +6,6 @@
 <title>Cost Comparison — Annetts &amp; Orchard Ltd</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Arimo:wght@400;500;700&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -92,23 +91,18 @@ main{max-width:1180px;margin:0 auto;padding:32px 24px 60px}
 .grand-val.rec{color:var(--teal-dk)}
 .grand-pct{font-size:13px;color:var(--mu);margin-left:6px;font-family:'Arimo',sans-serif}
 .grand-sub{font-size:12px;color:var(--mu);margin-top:4px}
-.sv-bar{background:var(--grn-bg);border:1px solid var(--grn-bd);border-left:4px solid var(--grn);border-radius:8px;padding:18px 24px;margin-bottom:24px;display:flex;align-items:center;gap:26px;flex-wrap:wrap}
+.sv-bar{border-radius:8px;padding:20px 28px;margin-bottom:24px;display:flex;align-items:center;gap:32px;flex-wrap:wrap;transition:background .3s,border-color .3s}
+.sv-bar.sv-saving{background:#eef7f1;border:1px solid #b2dfcb;border-left:4px solid #1a7a4a}
+.sv-bar.sv-cost{background:#f5f5f5;border:1px solid #D0D0D0;border-left:4px solid #888}
 .sv-item{text-align:center}
-.sv-lbl{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--mu);font-weight:500;margin-bottom:3px}
-.sv-val{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--grn)}
-.sv-sub{font-size:12px;color:var(--mu);margin-top:2px}
-.sv-div{width:1px;height:44px;background:var(--grn-bd)}
-.sv-note{flex:1;min-width:180px;font-size:12px;color:var(--tm);line-height:1.6}
-.sv-note strong{display:block;color:var(--grn);font-size:13px;margin-bottom:3px}
-.chart-card{background:var(--white);border:1px solid var(--gb);border-radius:8px;padding:24px;margin-bottom:24px}
-.chart-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;gap:16px;flex-wrap:wrap}
-.chart-head h2{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--navy)}
-.chart-head p{font-size:12px;color:var(--mu);margin-top:3px}
-.chart-leg{display:flex;gap:18px;flex-wrap:wrap;flex-shrink:0}
-.cl-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--tm)}
-.cl-sw{width:22px;height:3px;border-radius:2px}
-.cl-dash{background:repeating-linear-gradient(90deg,#004C97 0,#004C97 4px,transparent 4px,transparent 8px)}
-.chart-wrap{position:relative;width:100%;height:300px}
+.sv-lbl{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:#888;font-weight:500;margin-bottom:4px}
+.sv-val{font-family:'Playfair Display',serif;font-size:28px;font-weight:700}
+.sv-bar.sv-saving .sv-val{color:#1a7a4a}
+.sv-bar.sv-cost .sv-val{color:#555}
+.sv-div{width:1px;height:48px;background:#D0D0D0}
+.sv-note{flex:1;min-width:180px;font-size:13px;line-height:1.6}
+.sv-bar.sv-saving .sv-note{color:#1a7a4a}
+.sv-bar.sv-cost .sv-note{color:#555}
 footer{background:var(--navy);color:rgba(255,255,255,.6);font-size:11px;text-align:center;padding:16px 24px;line-height:1.7}
 footer strong{color:rgba(255,255,255,.85)}
 input[type="number"]::-webkit-inner-spin-button,
@@ -171,11 +165,7 @@ input[type="number"]{-moz-appearance:textfield}
   .grand-pct,.grand-sub{font-size:11px}
   .sv-bar{margin-bottom:12px;break-inside:avoid;padding:13px 18px;gap:18px}
   .sv-val{font-size:20px}
-  .sv-sub,.sv-note{font-size:11px}
-  .chart-card{padding:14px;break-inside:avoid;border:1px solid #ccc;border-radius:5px}
-  .chart-wrap{height:220px}
-  .chart-head h2{font-size:13px}
-  .chart-head p{font-size:10.5px}
+  .sv-note{font-size:11px}
   input{-webkit-appearance:none;appearance:none}
 }
 </style>
@@ -223,20 +213,6 @@ input[type="number"]{-moz-appearance:textfield}
     <input type="text" id="clientName" placeholder="Mr &amp; Mrs Smith" style="padding:7px 10px;border:1px solid var(--gb);border-radius:6px;font-family:'Arimo',sans-serif;font-size:13px;outline:none;width:160px" oninput="updatePrintMeta()">
     <label style="font-weight:500;font-size:13px;color:var(--navy)">Adviser</label>
     <input type="text" id="adviserName" placeholder="Tom Orchard" style="padding:7px 10px;border:1px solid var(--gb);border-radius:6px;font-family:'Arimo',sans-serif;font-size:13px;outline:none;width:140px" oninput="updatePrintMeta()">
-    <div style="width:1px;height:28px;background:var(--gm);flex-shrink:0"></div>
-    <label>Project over</label>
-    <select id="projYears">
-      <option value="5">5 years</option>
-      <option value="10" selected>10 years</option>
-      <option value="15">15 years</option>
-      <option value="20">20 years</option>
-      <option value="25">25 years</option>
-      <option value="30">30 years</option>
-    </select>
-    <label style="margin-left:8px">Assumed gross annual growth</label>
-    <input type="number" id="growthRate" value="5" step="0.5" min="0" max="20">
-    <span style="font-size:13px;color:var(--mu)">%</span>
-    <span class="top-note">For illustration only — not a guarantee of future performance</span>
   </div>
 
   <div class="cols">
@@ -280,57 +256,30 @@ input[type="number"]{-moz-appearance:textfield}
     </div>
   </div>
 
-  <div class="sv-bar">
+  <div class="sv-bar" id="svBar">
     <div class="sv-item">
-      <div class="sv-lbl">Annual saving</div>
+      <div class="sv-lbl" id="svLbl">Annual saving</div>
       <div class="sv-val" id="svPaGbp">—</div>
-      <div class="sv-sub" id="svPaPct"></div>
     </div>
     <div class="sv-div"></div>
     <div class="sv-item">
-      <div class="sv-lbl">Projected saving over <span id="svYrs">10</span> yrs</div>
-      <div class="sv-val" id="svProj">—</div>
-      <div class="sv-sub">additional fund value vs current charges</div>
+      <div class="sv-lbl">As a percentage</div>
+      <div class="sv-val" id="svPaPct">—</div>
     </div>
     <div class="sv-div"></div>
-    <div class="sv-note">
-      <strong>Lower charges compound over time</strong>
-      The projected saving shows the cumulative benefit of reduced ongoing charges reinvested and growing over the projection period. This is for illustration only.
-    </div>
+    <div class="sv-note" id="svNote"></div>
   </div>
 
-  <div class="chart-card" id="chartCard">
-    <div class="chart-head">
-      <div>
-        <h2>Projected total portfolio value</h2>
-        <p>All arrangements combined. Charges deducted annually. For illustration only — not a guarantee of future performance.</p>
-      </div>
-      <div style="display:flex;align-items:center;gap:18px">
-        <div class="chart-leg">
-          <div class="cl-item"><div class="cl-sw cl-dash"></div><span>Current charges</span></div>
-          <div class="cl-item"><div class="cl-sw" style="background:#00AEC7"></div><span>Recommended charges</span></div>
-        </div>
-        <button id="chartToggleBtn" onclick="toggleChart()" style="padding:5px 12px;border:1px solid var(--gb);border-radius:5px;background:transparent;font-family:'Arimo',sans-serif;font-size:12px;color:var(--navy);cursor:pointer;white-space:nowrap;transition:background .15s" onmouseover="this.style.background='var(--gl)'" onmouseout="this.style.background='transparent'">Hide chart</button>
-      </div>
-    </div>
-    <div id="chartBody">
-      <div class="chart-wrap">
-        <canvas id="growthChart" role="img" aria-label="Line chart comparing projected total portfolio value under current versus recommended charges">Chart comparing projected fund values.</canvas>
-      </div>
-    </div>
-  </div>
 
 </main>
 
 <footer>
   <strong>Annetts &amp; Orchard Ltd</strong> · Authorised and regulated by the Financial Conduct Authority · FCA No. 820272 · Salisbury, Wiltshire<br>
-  This document is for illustration purposes only and does not constitute financial advice. Charges shown are annual and based on the portfolio values entered. Projected values assume a constant rate of return and are not guaranteed. Past performance is not a reliable indicator of future results.
+  This document is for illustration purposes only and does not constitute financial advice. Charges shown are annual ongoing costs based on the portfolio values entered.
 </footer>
 
 <script>
 const state = { cur: [], rec: [], nextId: 1 };
-let chart = null;
-
 const $ = id => document.getElementById(id);
 const fmt  = n => '£' + Math.round(n).toLocaleString('en-GB');
 const fmtP = n => n.toFixed(2) + '%';
@@ -508,17 +457,7 @@ function updateCard(id, c) {
   set('ctbk-'+id, `Platform ${fmtP(c.plat)} · IM ${fmtP(c.im)} · Funds ${fmtP(c.fund)} · Advice ${fmtP(c.advPct)}`);
 }
 
-function project(fv, chargePct, growthRate, years) {
-  let v = fv;
-  const net = growthRate - chargePct / 100;
-  for (let y = 0; y < years; y++) v *= (1 + net);
-  return v;
-}
-
 function recalc() {
-  const years  = parseInt($('projYears').value) || 10;
-  const growth = (parseFloat($('growthRate').value) || 0) / 100;
-
   let cFv = 0, cGbp = 0;
   state.cur.forEach(a => {
     const c = calcArr(a.id);
@@ -546,110 +485,18 @@ function recalc() {
   $('gRecPct').textContent = rFv > 0 ? '(' + fmtP(rPct) + ' blended p.a.)' : '';
   $('gRecSub').textContent = rFv > 0 ? fmt(rFv) + ' across ' + state.rec.length + ' arrangement' + (state.rec.length !== 1 ? 's' : '') : 'No arrangements added';
 
-  // Savings — use current FV as the common base for projection
+  // Savings summary
   const savePaGbp = cGbp - rGbp;
   const savePaPct = cPct - rPct;
-  const cFinal = cFv > 0 ? project(cFv, cPct, growth, years) : 0;
-  // For recommended projection, if FV differs use rec's own FV
-  const rFvBase = rFv > 0 ? rFv : cFv;
-  const rFinal  = rFvBase > 0 ? project(rFvBase, rPct, growth, years) : 0;
-  // Projected saving: compare rec final against what current charges would have done to same starting FV
-  const cFinalOnRecBase = rFvBase > 0 ? project(rFvBase, cPct, growth, years) : 0;
-  const projSave = rFinal - cFinalOnRecBase;
-
-  $('svPaGbp').textContent = (savePaGbp >= 0 ? '' : '-') + '£' + Math.abs(Math.round(savePaGbp)).toLocaleString('en-GB');
-  $('svPaPct').textContent  = (savePaPct >= 0 ? '' : '-') + Math.abs(savePaPct).toFixed(2) + '% p.a.';
-  $('svYrs').textContent    = years;
-  $('svProj').textContent   = (projSave >= 0 ? '' : '-') + '£' + Math.abs(Math.round(projSave)).toLocaleString('en-GB');
-
-  // Chart — always show combined totals starting from each side's own base
-  const labels = ['Now'];
-  const cData  = [cFv];
-  const rData  = [rFvBase];
-  let cv = cFv, rv = rFvBase;
-  const cNet = growth - cPct / 100;
-  const rNet = growth - rPct / 100;
-  for (let y = 1; y <= years; y++) {
-    cv *= (1 + cNet);
-    rv *= (1 + rNet);
-    labels.push('Yr ' + y);
-    cData.push(Math.round(cv));
-    rData.push(Math.round(rv));
-  }
-
-  if (chart) {
-    chart.data.labels = labels;
-    chart.data.datasets[0].data = cData;
-    chart.data.datasets[1].data = rData;
-    chart.update();
-  } else {
-    chart = new Chart($('growthChart'), {
-      type: 'line',
-      data: {
-        labels,
-        datasets: [
-          {
-            label: 'Current charges',
-            data: cData,
-            borderColor: '#004C97',
-            borderWidth: 2,
-            borderDash: [6,4],
-            backgroundColor: 'rgba(0,76,151,.04)',
-            fill: false,
-            pointRadius: 3,
-            pointBackgroundColor: '#004C97',
-            tension: 0.15
-          },
-          {
-            label: 'Recommended charges',
-            data: rData,
-            borderColor: '#00AEC7',
-            borderWidth: 2.5,
-            backgroundColor: 'rgba(0,174,199,.07)',
-            fill: '+0',
-            pointRadius: 3,
-            pointBackgroundColor: '#00AEC7',
-            tension: 0.15
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        interaction: { mode: 'index', intersect: false },
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            callbacks: {
-              label(ctx) { return ctx.dataset.label + ': £' + ctx.parsed.y.toLocaleString('en-GB'); }
-            }
-          }
-        },
-        scales: {
-          x: {
-            grid: { color: 'rgba(0,0,0,.05)' },
-            ticks: { font: { family:'Arimo', size:11 }, color:'#888', autoSkip:true, maxRotation:0 }
-          },
-          y: {
-            grid: { color: 'rgba(0,0,0,.06)' },
-            ticks: {
-              font: { family:'Arimo', size:11 },
-              color: '#888',
-              callback(v) { return v >= 1000000 ? '£'+(v/1000000).toFixed(1)+'m' : '£'+Math.round(v/1000)+'k'; }
-            }
-          }
-        }
-      }
-    });
-  }
-}
-
-function toggleChart() {
-  const body = document.getElementById('chartBody');
-  const btn  = document.getElementById('chartToggleBtn');
-  const hidden = body.style.display === 'none';
-  body.style.display = hidden ? '' : 'none';
-  btn.textContent = hidden ? 'Hide chart' : 'Show chart';
+  const saving = savePaGbp >= 0;
+  const bar = $('svBar');
+  bar.className = 'sv-bar ' + (saving ? 'sv-saving' : 'sv-cost');
+  $('svLbl').textContent = saving ? 'Annual saving' : 'Additional annual cost';
+  $('svPaGbp').textContent = (saving ? '' : '+') + '£' + Math.abs(Math.round(savePaGbp)).toLocaleString('en-GB');
+  $('svPaPct').textContent = (saving ? '' : '+') + Math.abs(savePaPct).toFixed(2) + '% p.a.';
+  $('svNote').textContent = saving
+    ? 'The recommended arrangement costs less in ongoing charges each year.'
+    : 'The recommended arrangement has higher ongoing charges than the current arrangements.';
 }
 
 // PDF export
@@ -670,8 +517,6 @@ function exportPdf() {
 // Add buttons
 $('addCurBtn').addEventListener('click', () => addArr('cur'));
 $('addRecBtn').addEventListener('click', () => addArr('rec'));
-$('projYears').addEventListener('change', recalc);
-$('growthRate').addEventListener('input', recalc);
 
 // Seed
 (function seed() {
