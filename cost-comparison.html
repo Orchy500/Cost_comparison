@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cost Comparison — Annetts &amp; Orchard Ltd</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Arimo:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#004C97;--navy-dk:#003870;--teal:#00AEC7;--teal-dk:#008FA5;
+  --white:#fff;--gl:#F5F5F5;--gm:#E8E8E8;--gb:#D0D0D0;
+  --td:#1a1a1a;--tm:#555;--mu:#888;
+  --grn:#1a7a4a;--grn-bg:#eef7f1;--grn-bd:#b2dfcb;
+}
+body{font-family:'Arimo',sans-serif;font-size:14px;color:var(--td);background:var(--gl);min-height:100vh}
+header{background:var(--navy);color:#fff;padding:0 40px;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:200;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.hbrand{display:flex;align-items:center;gap:14px}
+.hlogo{height:36px;width:auto}
+.hdiv{width:1px;height:36px;background:rgba(255,255,255,.2);margin:0 6px}
+.htitle{font-family:'Playfair Display',serif;font-size:18px;font-weight:700}
+.hsub{font-size:11px;opacity:.7;letter-spacing:.06em;text-transform:uppercase;margin-top:2px}
+.hfca{font-size:11px;opacity:.6;text-align:right}
+.accent{height:4px;background:var(--teal)}
+main{max-width:1180px;margin:0 auto;padding:32px 24px 60px}
+.top-bar{background:var(--white);border:1px solid var(--gb);border-radius:8px;padding:16px 24px;margin-bottom:28px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.top-bar label{font-weight:500;font-size:13px;color:var(--navy)}
+.top-bar select,.top-bar input[type="number"]{padding:7px 10px;border:1px solid var(--gb);border-radius:6px;font-family:'Arimo',sans-serif;font-size:13px;outline:none;background:var(--white)}
+.top-bar input[type="number"]{width:70px;text-align:right}
+.top-bar select:focus,.top-bar input:focus{border-color:var(--teal)}
+.top-note{font-size:11px;color:var(--mu);font-style:italic;margin-left:auto}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;margin-bottom:24px}
+.col-head{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:var(--navy);margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.ch-badge{font-family:'Arimo',sans-serif;font-size:11px;font-weight:500;padding:3px 9px;border-radius:20px;letter-spacing:.04em;text-transform:uppercase}
+.ch-badge.cur{background:rgba(0,76,151,.1);color:var(--navy)}
+.ch-badge.rec{background:rgba(0,174,199,.12);color:var(--teal-dk)}
+.arr-card{background:var(--white);border:1px solid var(--gb);border-radius:8px;margin-bottom:12px;overflow:hidden}
+.arr-hdr{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--gm);background:var(--gl)}
+.arr-num{font-size:11px;font-weight:700;color:#fff;background:var(--navy);border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.arr-num.rn{background:var(--teal-dk)}
+.arr-name{flex:1;border:1px solid transparent;background:transparent;font-family:'Arimo',sans-serif;font-size:13px;font-weight:500;color:var(--td);outline:none;padding:3px 6px;border-radius:4px;min-width:0;transition:border-color .15s,background .15s;cursor:text}
+.arr-name::placeholder{color:var(--mu)}
+.arr-name:hover{border-color:var(--gb);background:#fff}
+.arr-name:focus{border-color:var(--teal);background:#fff}
+.arr-val-wrap{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.arr-val-wrap label{font-size:12px;color:var(--mu);white-space:nowrap}
+.val-pfx-wrap{position:relative;display:flex;align-items:center}
+.val-pfx{position:absolute;left:8px;font-size:13px;color:var(--tm);pointer-events:none}
+.val-input{padding:5px 8px 5px 18px;border:1px solid var(--gb);border-radius:5px;font-family:'Arimo',sans-serif;font-size:13px;width:130px;outline:none;text-align:right}
+.val-input:focus{border-color:var(--teal)}
+.rm-btn{background:none;border:none;font-size:20px;color:var(--mu);cursor:pointer;padding:0 2px;line-height:1;flex-shrink:0;transition:color .15s}
+.rm-btn:hover{color:#c0392b}
+.arr-body{padding:13px 15px}
+.cr{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--gm)}
+.cr:last-of-type{border-bottom:none}
+.cr-lbl{flex:1;font-size:12.5px;color:var(--td)}
+.cr-lbl small{display:block;font-size:11px;color:var(--mu);margin-top:1px}
+.ci{display:flex;align-items:center;gap:4px}
+.ci input[type="number"]{width:70px;padding:5px 7px;border:1px solid var(--gb);border-radius:5px;font-family:'Arimo',sans-serif;font-size:12.5px;text-align:right;outline:none}
+.ci input[type="number"]:focus{border-color:var(--teal)}
+.ci .u{font-size:11.5px;color:var(--mu);width:12px}
+.ci .ap{font-size:11px;color:var(--mu);width:58px;text-align:right;font-variant-numeric:tabular-nums}
+.adv-row{display:flex;align-items:flex-start;gap:8px;padding:6px 0}
+.adv-lbl{flex:1;font-size:12.5px;color:var(--td)}
+.adv-lbl small{display:block;font-size:11px;color:var(--mu);margin-top:1px}
+.adv-right{display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.adv-tog{display:flex;border:1px solid var(--gb);border-radius:5px;overflow:hidden;height:26px}
+.adv-tog button{padding:0 9px;border:none;background:var(--white);font-family:'Arimo',sans-serif;font-size:12px;cursor:pointer;color:var(--mu);transition:background .12s,color .12s}
+.adv-tog button.active{background:var(--navy);color:#fff}
+.adv-irow{display:flex;align-items:center;gap:4px}
+.adv-pfx{font-size:12.5px;color:var(--mu)}
+.adv-irow input{width:70px;padding:5px 7px;border:1px solid var(--gb);border-radius:5px;font-family:'Arimo',sans-serif;font-size:12.5px;text-align:right;outline:none}
+.adv-irow input:focus{border-color:var(--teal)}
+.adv-ap{font-size:11px;color:var(--mu);text-align:right}
+.card-tot{margin-top:11px;padding-top:9px;border-top:2px solid var(--navy)}
+.card-tot.rec{border-color:var(--teal)}
+.ct-row{display:flex;justify-content:space-between;align-items:baseline}
+.ct-lbl{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--mu);font-weight:500}
+.ct-val{font-family:'Playfair Display',serif;font-size:19px;font-weight:700;color:var(--navy)}
+.ct-val.rec{color:var(--teal-dk)}
+.ct-pct{font-size:12px;color:var(--mu);margin-left:4px;font-family:'Arimo',sans-serif}
+.ct-bk{font-size:11px;color:var(--mu);margin-top:2px}
+.add-btn{width:100%;padding:10px;border:1.5px dashed var(--gb);border-radius:8px;background:transparent;font-family:'Arimo',sans-serif;font-size:13px;color:var(--navy);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;margin-top:4px;transition:border-color .15s,background .15s}
+.add-btn:hover{border-color:var(--teal);background:rgba(0,174,199,.04);color:var(--teal-dk)}
+.add-btn.rec-add{color:var(--teal-dk);border-color:rgba(0,174,199,.35)}
+.grand-bar{background:var(--white);border:1px solid var(--gb);border-radius:8px;margin-bottom:24px;overflow:hidden}
+.grand-inner{display:grid;grid-template-columns:1fr 1px 1fr}
+.grand-half{padding:18px 24px}
+.grand-half.cur{border-left:4px solid var(--navy)}
+.grand-half.rec{border-left:4px solid var(--teal)}
+.grand-div{background:var(--gm)}
+.grand-lbl{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--mu);font-weight:500;margin-bottom:5px}
+.grand-val{font-family:'Playfair Display',serif;font-size:28px;font-weight:700}
+.grand-val.cur{color:var(--navy)}
+.grand-val.rec{color:var(--teal-dk)}
+.grand-pct{font-size:13px;color:var(--mu);margin-left:6px;font-family:'Arimo',sans-serif}
+.grand-sub{font-size:12px;color:var(--mu);margin-top:4px}
+.sv-bar{background:var(--grn-bg);border:1px solid var(--grn-bd);border-left:4px solid var(--grn);border-radius:8px;padding:18px 24px;margin-bottom:24px;display:flex;align-items:center;gap:26px;flex-wrap:wrap}
+.sv-item{text-align:center}
+.sv-lbl{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--mu);font-weight:500;margin-bottom:3px}
+.sv-val{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--grn)}
+.sv-sub{font-size:12px;color:var(--mu);margin-top:2px}
+.sv-div{width:1px;height:44px;background:var(--grn-bd)}
+.sv-note{flex:1;min-width:180px;font-size:12px;color:var(--tm);line-height:1.6}
+.sv-note strong{display:block;color:var(--grn);font-size:13px;margin-bottom:3px}
+.chart-card{background:var(--white);border:1px solid var(--gb);border-radius:8px;padding:24px;margin-bottom:24px}
+.chart-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;gap:16px;flex-wrap:wrap}
+.chart-head h2{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--navy)}
+.chart-head p{font-size:12px;color:var(--mu);margin-top:3px}
+.chart-leg{display:flex;gap:18px;flex-wrap:wrap;flex-shrink:0}
+.cl-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--tm)}
+.cl-sw{width:22px;height:3px;border-radius:2px}
+.cl-dash{background:repeating-linear-gradient(90deg,#004C97 0,#004C97 4px,transparent 4px,transparent 8px)}
+.chart-wrap{position:relative;width:100%;height:300px}
+footer{background:var(--navy);color:rgba(255,255,255,.6);font-size:11px;text-align:center;padding:16px 24px;line-height:1.7}
+footer strong{color:rgba(255,255,255,.85)}
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button{-webkit-appearance:none}
+input[type="number"]{-moz-appearance:textfield}
+.pdf-btn{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:6px;padding:7px 14px;font-family:'Arimo',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:background .15s;white-space:nowrap}
+.pdf-btn:hover{background:rgba(255,255,255,.22);border-color:rgba(255,255,255,.5)}
+.client-sep{width:1px;height:28px;background:var(--gm);margin:0 4px}
+.print-cover{display:none}
+@media(max-width:760px){
+  .cols{grid-template-columns:1fr}
+  .grand-inner{grid-template-columns:1fr;grid-template-rows:auto}
+  .grand-div{display:none}
+  .sv-bar{flex-direction:column;gap:12px}
+  .sv-div{display:none}
+  header{padding:0 14px}
+  main{padding:18px 12px 40px}
+  .pdf-btn span{display:none}
+}
+@media print{
+  *{print-color-adjust:exact;-webkit-print-color-adjust:exact}
+  @page{size:A4 portrait;margin:12mm 12mm 14mm 12mm}
+  body{background:#fff;font-size:12px}
+  header,footer,.accent,.top-bar,.add-btn,.rm-btn,.adv-tog{display:none !important}
+  .print-cover{display:block;background:#004C97;color:#fff;padding:16px 22px 13px;margin-bottom:18px}
+  .pc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+  .pc-firm{font-family:'Playfair Display',serif;font-size:15px;font-weight:700}
+  .pc-fca{font-size:10px;opacity:.7;text-align:right;line-height:1.5}
+  .pc-stripe{height:3px;background:#00AEC7;margin-bottom:10px}
+  .pc-meta{display:flex;gap:36px;align-items:baseline}
+  .pc-title{font-family:'Playfair Display',serif;font-size:19px;font-weight:700}
+  .pc-for{font-size:12px;opacity:.85}
+  .pc-date{font-size:11px;opacity:.65;margin-left:auto}
+  main{padding:0;max-width:none}
+  .cols{grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+  .col-head{font-size:13px;margin-bottom:8px}
+  .arr-card{border:1px solid #ccc;border-radius:4px;margin-bottom:7px;break-inside:avoid}
+  .arr-hdr{background:#f2f2f2;padding:6px 11px;border-bottom:1px solid #ddd}
+  .arr-name{font-size:12px;padding:1px 4px;border:none;background:transparent}
+  .arr-val-wrap label{font-size:10.5px}
+  .val-input{font-size:12px;width:100px;padding:2px 4px 2px 14px;border:none;background:transparent}
+  .val-pfx{font-size:11.5px}
+  .arr-body{padding:7px 11px}
+  .cr{padding:3px 0}
+  .cr-lbl{font-size:11px}
+  .cr-lbl small{font-size:10px}
+  .ci input[type="number"]{width:52px;font-size:11px;padding:2px 4px;border:none;background:transparent;text-align:right}
+  .ci .u{font-size:10.5px}
+  .ci .ap{font-size:10.5px;width:52px}
+  .adv-lbl{font-size:11px}
+  .adv-lbl small{font-size:10px}
+  .adv-irow input{width:52px;font-size:11px;padding:2px 4px;border:none;background:transparent;text-align:right}
+  .adv-ap{font-size:10.5px}
+  .card-tot{margin-top:7px;padding-top:6px}
+  .ct-val{font-size:15px}
+  .ct-pct{font-size:11px}
+  .ct-bk{font-size:10px}
+  .grand-bar{margin-bottom:12px;break-inside:avoid;border:1px solid #ccc;border-radius:5px}
+  .grand-half{padding:11px 16px}
+  .grand-val{font-size:22px}
+  .grand-pct,.grand-sub{font-size:11px}
+  .sv-bar{margin-bottom:12px;break-inside:avoid;padding:13px 18px;gap:18px}
+  .sv-val{font-size:20px}
+  .sv-sub,.sv-note{font-size:11px}
+  .chart-card{padding:14px;break-inside:avoid;border:1px solid #ccc;border-radius:5px}
+  .chart-wrap{height:220px}
+  .chart-head h2{font-size:13px}
+  .chart-head p{font-size:10.5px}
+  input,select{-webkit-appearance:none;appearance:none}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hbrand">
+    <img src="logo.png" class="hlogo" alt="Annetts &amp; Orchard"
+         onload="document.getElementById('hTextFallback').style.display='none'"
+         onerror="this.style.display='none'">
+    <div id="hTextFallback">
+      <div class="htitle">Annetts &amp; Orchard Ltd</div>
+      <div class="hsub">Independent Financial Advisers</div>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:18px">
+    <div style="color:#fff;font-family:'Playfair Display',serif;font-size:15px;font-weight:700">Cost Comparison</div>
+    <button class="pdf-btn" onclick="exportPdf()">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M7 1v8M4 6l3 3 3-3M2 11h10" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>Save as PDF</span>
+    </button>
+  </div>
+</header>
+<div class="accent"></div>
+
+<!-- Print-only cover strip -->
+<div class="print-cover" id="printCover">
+  <div class="pc-top">
+    <div class="pc-firm">Annetts &amp; Orchard Ltd</div>
+    <div class="pc-fca">Authorised and regulated by the Financial Conduct Authority<br>FCA No. 820272 &middot; Salisbury, Wiltshire</div>
+  </div>
+  <div class="pc-stripe"></div>
+  <div class="pc-meta">
+    <div class="pc-title">Cost Comparison</div>
+    <div class="pc-for" id="pcFor"></div>
+    <div class="pc-date" id="pcDate"></div>
+  </div>
+</div>
+
+<main>
+
+  <div class="top-bar">
+    <label style="font-weight:500;font-size:13px;color:var(--navy)">Client</label>
+    <input type="text" id="clientName" placeholder="Mr &amp; Mrs Smith" style="padding:7px 10px;border:1px solid var(--gb);border-radius:6px;font-family:'Arimo',sans-serif;font-size:13px;outline:none;width:160px" oninput="updatePrintMeta()">
+    <label style="font-weight:500;font-size:13px;color:var(--navy)">Adviser</label>
+    <input type="text" id="adviserName" placeholder="Tom Orchard" style="padding:7px 10px;border:1px solid var(--gb);border-radius:6px;font-family:'Arimo',sans-serif;font-size:13px;outline:none;width:140px" oninput="updatePrintMeta()">
+    <div style="width:1px;height:28px;background:var(--gm);flex-shrink:0"></div>
+    <label>Project over</label>
+    <select id="projYears">
+      <option value="5">5 years</option>
+      <option value="10" selected>10 years</option>
+      <option value="15">15 years</option>
+      <option value="20">20 years</option>
+      <option value="25">25 years</option>
+      <option value="30">30 years</option>
+    </select>
+    <label style="margin-left:8px">Assumed gross annual growth</label>
+    <input type="number" id="growthRate" value="5" step="0.5" min="0" max="20">
+    <span style="font-size:13px;color:var(--mu)">%</span>
+    <span class="top-note">For illustration only — not a guarantee of future performance</span>
+  </div>
+
+  <div class="cols">
+    <div>
+      <div class="col-head">
+        Current arrangements
+        <span class="ch-badge cur">Before advice</span>
+      </div>
+      <div id="curList"></div>
+      <button class="add-btn" id="addCurBtn">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><line x1="6.5" y1="1" x2="6.5" y2="12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><line x1="1" y1="6.5" x2="12" y2="6.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        Add arrangement
+      </button>
+    </div>
+    <div>
+      <div class="col-head">
+        Recommended arrangements
+        <span class="ch-badge rec">After advice</span>
+      </div>
+      <div id="recList"></div>
+      <button class="add-btn rec-add" id="addRecBtn">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><line x1="6.5" y1="1" x2="6.5" y2="12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><line x1="1" y1="6.5" x2="12" y2="6.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        Add arrangement
+      </button>
+    </div>
+  </div>
+
+  <div class="grand-bar">
+    <div class="grand-inner">
+      <div class="grand-half cur">
+        <div class="grand-lbl">Total current annual cost</div>
+        <div><span class="grand-val cur" id="gCurGbp">—</span><span class="grand-pct" id="gCurPct"></span></div>
+        <div class="grand-sub" id="gCurSub"></div>
+      </div>
+      <div class="grand-div"></div>
+      <div class="grand-half rec">
+        <div class="grand-lbl">Total recommended annual cost</div>
+        <div><span class="grand-val rec" id="gRecGbp">—</span><span class="grand-pct" id="gRecPct"></span></div>
+        <div class="grand-sub" id="gRecSub"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sv-bar">
+    <div class="sv-item">
+      <div class="sv-lbl">Annual saving</div>
+      <div class="sv-val" id="svPaGbp">—</div>
+      <div class="sv-sub" id="svPaPct"></div>
+    </div>
+    <div class="sv-div"></div>
+    <div class="sv-item">
+      <div class="sv-lbl">Projected saving over <span id="svYrs">10</span> yrs</div>
+      <div class="sv-val" id="svProj">—</div>
+      <div class="sv-sub">additional fund value vs current charges</div>
+    </div>
+    <div class="sv-div"></div>
+    <div class="sv-note">
+      <strong>Lower charges compound over time</strong>
+      The projected saving shows the cumulative benefit of reduced ongoing charges reinvested and growing over the projection period. This is for illustration only.
+    </div>
+  </div>
+
+  <div class="chart-card" id="chartCard">
+    <div class="chart-head">
+      <div>
+        <h2>Projected total portfolio value</h2>
+        <p>All arrangements combined. Charges deducted annually. For illustration only — not a guarantee of future performance.</p>
+      </div>
+      <div style="display:flex;align-items:center;gap:18px">
+        <div class="chart-leg">
+          <div class="cl-item"><div class="cl-sw cl-dash"></div><span>Current charges</span></div>
+          <div class="cl-item"><div class="cl-sw" style="background:#00AEC7"></div><span>Recommended charges</span></div>
+        </div>
+        <button id="chartToggleBtn" onclick="toggleChart()" style="padding:5px 12px;border:1px solid var(--gb);border-radius:5px;background:transparent;font-family:'Arimo',sans-serif;font-size:12px;color:var(--navy);cursor:pointer;white-space:nowrap;transition:background .15s" onmouseover="this.style.background='var(--gl)'" onmouseout="this.style.background='transparent'">Hide chart</button>
+      </div>
+    </div>
+    <div id="chartBody">
+      <div class="chart-wrap">
+        <canvas id="growthChart" role="img" aria-label="Line chart comparing projected total portfolio value under current versus recommended charges">Chart comparing projected fund values.</canvas>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <strong>Annetts &amp; Orchard Ltd</strong> · Authorised and regulated by the Financial Conduct Authority · FCA No. 820272 · Salisbury, Wiltshire<br>
+  This document is for illustration purposes only and does not constitute financial advice. Charges shown are annual and based on the portfolio values entered. Projected values assume a constant rate of return and are not guaranteed. Past performance is not a reliable indicator of future results.
+</footer>
+
+<script>
+const state = { cur: [], rec: [], nextId: 1 };
+let chart = null;
+
+const $ = id => document.getElementById(id);
+const fmt  = n => '£' + Math.round(n).toLocaleString('en-GB');
+const fmtP = n => n.toFixed(2) + '%';
+
+const DEFAULT_NAMES = {
+  cur: ['ISA','Pension','Investment Bond','GIA','Offshore Bond','Unit Trust'],
+  rec: ['Recommended Portfolio','Pension','ISA','GIA']
+};
+const DEFAULT_CHARGES = {
+  cur: { platform:0.35, im:0.75, fund:0.18, advice:0.75, value:100000 },
+  rec: { platform:0.25, im:0.50, fund:0.12, advice:0.75, value:250000 }
+};
+
+function makeArr(side, idx) {
+  const dc = DEFAULT_CHARGES[side];
+  return {
+    id: state.nextId++,
+    side,
+    name: DEFAULT_NAMES[side][idx] || 'Arrangement',
+    value: dc.value,
+    platform: dc.platform, im: dc.im, fund: dc.fund,
+    adviceMode: 'pct', advice: dc.advice
+  };
+}
+
+function buildCard(arr) {
+  const isRec = arr.side === 'rec';
+  const d = document.createElement('div');
+  d.className = 'arr-card';
+  d.id = 'card-' + arr.id;
+  d.innerHTML = `
+    <div class="arr-hdr">
+      <div class="arr-num${isRec?' rn':''}" id="num-${arr.id}">1</div>
+      <input class="arr-name" id="name-${arr.id}" value="${arr.name}" placeholder="Arrangement name" autocomplete="off">
+      <div class="arr-val-wrap">
+        <label>Value</label>
+        <div class="val-pfx-wrap">
+          <span class="val-pfx">£</span>
+          <input type="number" class="val-input" id="val-${arr.id}" value="${arr.value}" step="1000" min="0">
+        </div>
+      </div>
+      <button class="rm-btn" data-id="${arr.id}" title="Remove">×</button>
+    </div>
+    <div class="arr-body">
+      <div class="cr">
+        <div class="cr-lbl">Platform / Provider<small>Wrap, pension or bond charges</small></div>
+        <div class="ci">
+          <input type="number" id="plat-${arr.id}" value="${arr.platform}" step="0.01" min="0" max="10">
+          <span class="u">%</span><span class="ap" id="plat-ap-${arr.id}"></span>
+        </div>
+      </div>
+      <div class="cr">
+        <div class="cr-lbl">Investment management<small>DFM or managed portfolio charge</small></div>
+        <div class="ci">
+          <input type="number" id="im-${arr.id}" value="${arr.im}" step="0.01" min="0" max="10">
+          <span class="u">%</span><span class="ap" id="im-ap-${arr.id}"></span>
+        </div>
+      </div>
+      <div class="cr">
+        <div class="cr-lbl">Fund charges (OCF)<small>Ongoing charge figure / TER</small></div>
+        <div class="ci">
+          <input type="number" id="fund-${arr.id}" value="${arr.fund}" step="0.01" min="0" max="10">
+          <span class="u">%</span><span class="ap" id="fund-ap-${arr.id}"></span>
+        </div>
+      </div>
+      <div class="adv-row">
+        <div class="adv-lbl">Advice fee<small>Ongoing adviser charge</small></div>
+        <div class="adv-right">
+          <div class="adv-tog" id="atog-${arr.id}">
+            <button class="active" data-mode="pct" data-id="${arr.id}">%</button>
+            <button data-mode="gbp" data-id="${arr.id}">£</button>
+          </div>
+          <div class="adv-irow">
+            <span class="adv-pfx" id="apfx-${arr.id}">%</span>
+            <input type="number" id="adv-${arr.id}" value="${arr.advice}" step="0.01" min="0">
+          </div>
+          <div class="adv-ap" id="adv-ap-${arr.id}"></div>
+        </div>
+      </div>
+      <div class="card-tot${isRec?' rec':''}">
+        <div class="ct-row">
+          <span class="ct-lbl">Annual cost</span>
+          <span><span class="ct-val${isRec?' rec':''}" id="ctv-${arr.id}">—</span><span class="ct-pct" id="ctp-${arr.id}"></span></span>
+        </div>
+        <div class="ct-bk" id="ctbk-${arr.id}"></div>
+      </div>
+    </div>`;
+
+  // advice toggle buttons
+  d.querySelectorAll('.adv-tog button').forEach(btn => {
+    btn.addEventListener('click', () => setMode(parseInt(btn.dataset.id), btn.dataset.mode));
+  });
+  // remove button
+  d.querySelector('.rm-btn').addEventListener('click', e => removeArr(parseInt(e.target.dataset.id)));
+  // all numeric inputs
+  d.querySelectorAll('input').forEach(el => el.addEventListener('input', recalc));
+  return d;
+}
+
+function addArr(side, arr) {
+  if (!arr) {
+    arr = makeArr(side, state[side].length);
+    if (side === 'cur' && state.cur.length > 0) arr.value = 100000;
+    if (side === 'rec' && state.rec.length > 0) arr.value = 100000;
+  }
+  state[side].push(arr);
+  $(side === 'cur' ? 'curList' : 'recList').appendChild(buildCard(arr));
+  reindex(side);
+  recalc();
+}
+
+function removeArr(id) {
+  for (const side of ['cur','rec']) {
+    const idx = state[side].findIndex(a => a.id === id);
+    if (idx !== -1) {
+      state[side].splice(idx, 1);
+      const el = $('card-' + id);
+      if (el) el.remove();
+      reindex(side);
+      break;
+    }
+  }
+  recalc();
+}
+
+function reindex(side) {
+  const list = $(side === 'cur' ? 'curList' : 'recList');
+  list.querySelectorAll('.arr-num').forEach((el, i) => el.textContent = i + 1);
+}
+
+function setMode(id, mode) {
+  const arr = [...state.cur,...state.rec].find(a => a.id === id);
+  if (!arr) return;
+  arr.adviceMode = mode;
+  const tog = $('atog-' + id);
+  tog.querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
+  const pfx = $('apfx-' + id);
+  const inp = $('adv-'  + id);
+  const fv  = parseFloat($('val-' + id)?.value) || 0;
+  if (mode === 'pct') {
+    pfx.textContent = '%';
+    inp.value = fv > 0 ? parseFloat((parseFloat(inp.value) / fv * 100).toFixed(2)) : 0.75;
+    inp.step  = '0.01';
+  } else {
+    pfx.textContent = '£';
+    inp.value = Math.round(fv * parseFloat(inp.value) / 100) || 1000;
+    inp.step  = '100';
+  }
+  recalc();
+}
+
+function calcArr(id) {
+  const fv     = parseFloat($('val-'  + id)?.value) || 0;
+  const plat   = parseFloat($('plat-' + id)?.value) || 0;
+  const im     = parseFloat($('im-'   + id)?.value) || 0;
+  const fund   = parseFloat($('fund-' + id)?.value) || 0;
+  const advRaw = parseFloat($('adv-'  + id)?.value) || 0;
+  const arr    = [...state.cur,...state.rec].find(a => a.id === id) || {};
+  let advPct, advGbp;
+  if (arr.adviceMode === 'gbp') {
+    advGbp = advRaw;
+    advPct = fv > 0 ? advGbp / fv * 100 : 0;
+  } else {
+    advPct = advRaw;
+    advGbp = fv * advPct / 100;
+  }
+  const totalPct = plat + im + fund + advPct;
+  const totalGbp = fv * totalPct / 100;
+  return { fv, plat, im, fund, advPct, advGbp, totalPct, totalGbp };
+}
+
+function updateCard(id, c) {
+  const set = (eid, v) => { const el = $(eid); if (el) el.textContent = v; };
+  set('plat-ap-'+id, c.fv > 0 ? fmt(c.fv * c.plat / 100) : '');
+  set('im-ap-'  +id, c.fv > 0 ? fmt(c.fv * c.im   / 100) : '');
+  set('fund-ap-'+id, c.fv > 0 ? fmt(c.fv * c.fund / 100) : '');
+  const arr = [...state.cur,...state.rec].find(a => a.id === id) || {};
+  set('adv-ap-' +id, c.fv > 0 ? (arr.adviceMode === 'pct' ? fmt(c.advGbp) : fmtP(c.advPct)) : '');
+  set('ctv-'+id,  fmt(c.totalGbp));
+  set('ctp-'+id,  '(' + fmtP(c.totalPct) + ' p.a.)');
+  set('ctbk-'+id, `Platform ${fmtP(c.plat)} · IM ${fmtP(c.im)} · Funds ${fmtP(c.fund)} · Advice ${fmtP(c.advPct)}`);
+}
+
+function project(fv, chargePct, growthRate, years) {
+  let v = fv;
+  const net = growthRate - chargePct / 100;
+  for (let y = 0; y < years; y++) v *= (1 + net);
+  return v;
+}
+
+function recalc() {
+  const years  = parseInt($('projYears').value) || 10;
+  const growth = (parseFloat($('growthRate').value) || 0) / 100;
+
+  let cFv = 0, cGbp = 0;
+  state.cur.forEach(a => {
+    const c = calcArr(a.id);
+    updateCard(a.id, c);
+    cFv  += c.fv;
+    cGbp += c.totalGbp;
+  });
+  const cPct = cFv > 0 ? cGbp / cFv * 100 : 0;
+
+  let rFv = 0, rGbp = 0;
+  state.rec.forEach(a => {
+    const c = calcArr(a.id);
+    updateCard(a.id, c);
+    rFv  += c.fv;
+    rGbp += c.totalGbp;
+  });
+  const rPct = rFv > 0 ? rGbp / rFv * 100 : 0;
+
+  // Grand totals
+  $('gCurGbp').textContent = fmt(cGbp);
+  $('gCurPct').textContent = cFv > 0 ? '(' + fmtP(cPct) + ' blended p.a.)' : '';
+  $('gCurSub').textContent = cFv > 0 ? fmt(cFv) + ' across ' + state.cur.length + ' arrangement' + (state.cur.length !== 1 ? 's' : '') : 'No arrangements added';
+
+  $('gRecGbp').textContent = fmt(rGbp);
+  $('gRecPct').textContent = rFv > 0 ? '(' + fmtP(rPct) + ' blended p.a.)' : '';
+  $('gRecSub').textContent = rFv > 0 ? fmt(rFv) + ' across ' + state.rec.length + ' arrangement' + (state.rec.length !== 1 ? 's' : '') : 'No arrangements added';
+
+  // Savings — use current FV as the common base for projection
+  const savePaGbp = cGbp - rGbp;
+  const savePaPct = cPct - rPct;
+  const cFinal = cFv > 0 ? project(cFv, cPct, growth, years) : 0;
+  // For recommended projection, if FV differs use rec's own FV
+  const rFvBase = rFv > 0 ? rFv : cFv;
+  const rFinal  = rFvBase > 0 ? project(rFvBase, rPct, growth, years) : 0;
+  // Projected saving: compare rec final against what current charges would have done to same starting FV
+  const cFinalOnRecBase = rFvBase > 0 ? project(rFvBase, cPct, growth, years) : 0;
+  const projSave = rFinal - cFinalOnRecBase;
+
+  $('svPaGbp').textContent = (savePaGbp >= 0 ? '' : '-') + '£' + Math.abs(Math.round(savePaGbp)).toLocaleString('en-GB');
+  $('svPaPct').textContent  = (savePaPct >= 0 ? '' : '-') + Math.abs(savePaPct).toFixed(2) + '% p.a.';
+  $('svYrs').textContent    = years;
+  $('svProj').textContent   = (projSave >= 0 ? '' : '-') + '£' + Math.abs(Math.round(projSave)).toLocaleString('en-GB');
+
+  // Chart — always show combined totals starting from each side's own base
+  const labels = ['Now'];
+  const cData  = [cFv];
+  const rData  = [rFvBase];
+  let cv = cFv, rv = rFvBase;
+  const cNet = growth - cPct / 100;
+  const rNet = growth - rPct / 100;
+  for (let y = 1; y <= years; y++) {
+    cv *= (1 + cNet);
+    rv *= (1 + rNet);
+    labels.push('Yr ' + y);
+    cData.push(Math.round(cv));
+    rData.push(Math.round(rv));
+  }
+
+  if (chart) {
+    chart.data.labels = labels;
+    chart.data.datasets[0].data = cData;
+    chart.data.datasets[1].data = rData;
+    chart.update();
+  } else {
+    chart = new Chart($('growthChart'), {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [
+          {
+            label: 'Current charges',
+            data: cData,
+            borderColor: '#004C97',
+            borderWidth: 2,
+            borderDash: [6,4],
+            backgroundColor: 'rgba(0,76,151,.04)',
+            fill: false,
+            pointRadius: 3,
+            pointBackgroundColor: '#004C97',
+            tension: 0.15
+          },
+          {
+            label: 'Recommended charges',
+            data: rData,
+            borderColor: '#00AEC7',
+            borderWidth: 2.5,
+            backgroundColor: 'rgba(0,174,199,.07)',
+            fill: '+0',
+            pointRadius: 3,
+            pointBackgroundColor: '#00AEC7',
+            tension: 0.15
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label(ctx) { return ctx.dataset.label + ': £' + ctx.parsed.y.toLocaleString('en-GB'); }
+            }
+          }
+        },
+        scales: {
+          x: {
+            grid: { color: 'rgba(0,0,0,.05)' },
+            ticks: { font: { family:'Arimo', size:11 }, color:'#888', autoSkip:true, maxRotation:0 }
+          },
+          y: {
+            grid: { color: 'rgba(0,0,0,.06)' },
+            ticks: {
+              font: { family:'Arimo', size:11 },
+              color: '#888',
+              callback(v) { return v >= 1000000 ? '£'+(v/1000000).toFixed(1)+'m' : '£'+Math.round(v/1000)+'k'; }
+            }
+          }
+        }
+      }
+    });
+  }
+}
+
+function toggleChart() {
+  const body = document.getElementById('chartBody');
+  const btn  = document.getElementById('chartToggleBtn');
+  const hidden = body.style.display === 'none';
+  body.style.display = hidden ? '' : 'none';
+  btn.textContent = hidden ? 'Hide chart' : 'Show chart';
+}
+
+// PDF export
+function updatePrintMeta() {
+  const client  = document.getElementById('clientName')?.value.trim();
+  const adviser = document.getElementById('adviserName')?.value.trim();
+  const pcFor   = document.getElementById('pcFor');
+  const pcDate  = document.getElementById('pcDate');
+  if (pcFor)  pcFor.textContent  = client  ? 'Prepared for: ' + client  : '';
+  if (pcDate) pcDate.textContent = 'Date: ' + new Date().toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' }) + (adviser ? '  ·  Adviser: ' + adviser : '');
+}
+
+function exportPdf() {
+  updatePrintMeta();
+  window.print();
+}
+
+// Add buttons
+$('addCurBtn').addEventListener('click', () => addArr('cur'));
+$('addRecBtn').addEventListener('click', () => addArr('rec'));
+$('projYears').addEventListener('change', recalc);
+$('growthRate').addEventListener('input', recalc);
+
+// Seed
+(function seed() {
+  const a1 = makeArr('cur', 0); a1.value = 150000; addArr('cur', a1);
+  const a2 = makeArr('cur', 1); a2.value = 100000; addArr('cur', a2);
+  const r1 = makeArr('rec', 0); r1.value = 250000; addArr('rec', r1);
+})();
+</script>
+</body>
+</html>
