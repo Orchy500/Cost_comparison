@@ -68,6 +68,7 @@ main{max-width:1180px;margin:0 auto;padding:32px 24px 60px}
 .adv-num{width:70px;padding:5px 7px;border:1px solid #D0D0D0;border-radius:5px;font-family:'Arimo',sans-serif;font-size:12.5px;text-align:right;outline:none;height:30px;flex-shrink:0}
 .adv-num:focus{border-color:#00AEC7}
 .adv-ap{font-size:11px;color:#888;margin-left:4px;white-space:nowrap}
+.adv-mode-print{display:none;font-size:11px;color:#888;margin-right:2px}
 .card-tot{margin-top:11px;padding-top:9px;border-top:2px solid var(--navy)}
 .card-tot.rec{border-color:var(--teal)}
 .ct-row{display:flex;justify-content:space-between;align-items:baseline}
@@ -122,51 +123,173 @@ input[type="number"]{-moz-appearance:textfield}
   main{padding:18px 12px 40px}
   .pdf-btn span{display:none}
 }
-@page{size:A4 portrait;margin:12mm 12mm 14mm 12mm}
+@page{size:A4 portrait;margin:0}
 @media print{
   *{print-color-adjust:exact;-webkit-print-color-adjust:exact}
-  body{background:#fff;font-size:12px}
-  header,footer,.accent,.top-bar,.add-btn,.rm-btn{display:none !important}
-  .print-cover{display:block;background:#004C97;color:#fff;padding:16px 22px 13px;margin-bottom:18px}
-  .pc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
-  .pc-firm{font-family:'Playfair Display',serif;font-size:15px;font-weight:700}
-  .pc-fca{font-size:10px;opacity:.7;text-align:right;line-height:1.5}
-  .pc-stripe{height:3px;background:#00AEC7;margin-bottom:10px}
-  .pc-meta{display:flex;gap:36px;align-items:baseline}
-  .pc-title{font-family:'Playfair Display',serif;font-size:19px;font-weight:700}
-  .pc-for{font-size:12px;opacity:.85}
-  .pc-date{font-size:11px;opacity:.65;margin-left:auto}
-  main{padding:0;max-width:none}
-  .cols{grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
-  .col-head{font-size:13px;margin-bottom:8px}
-  .arr-card{border:1px solid #ccc;border-radius:4px;margin-bottom:7px;break-inside:avoid}
-  .arr-hdr{background:#f2f2f2;padding:6px 11px;border-bottom:1px solid #ddd}
-  .arr-name{font-size:12px;padding:1px 4px;border:none;background:transparent}
-  .arr-val-wrap label{font-size:10.5px}
-  .val-input{font-size:12px;width:100px;padding:2px 4px 2px 14px;border:none;background:transparent}
-  .val-pfx{font-size:11.5px}
-  .arr-body{padding:7px 11px}
-  .cr{padding:3px 0}
-  .cr-lbl{font-size:11px}
-  .cr-lbl small{font-size:10px}
-  .ci input[type="number"]{width:52px;font-size:11px;padding:2px 4px;border:none;background:transparent;text-align:right}
-  .ci .u{font-size:10.5px}
-  .ci .ap{font-size:10.5px;width:52px}
-  .adv-lbl{font-size:11px}
-  .adv-lbl small{font-size:10px}
-  .adv-ap{font-size:10.5px}
-  .card-tot{margin-top:7px;padding-top:6px}
-  .ct-val{font-size:15px}
+
+  body{background:#fff;font-size:11px;margin:0;padding:0}
+  header,.accent,.top-bar,.add-btn,.rm-btn{display:none !important}
+
+  /* ── Cover strip ── */
+  .print-cover{
+    display:block;
+    background:#004C97;
+    color:#fff;
+    padding:16px 24px 0;
+    margin-bottom:0;
+  }
+  .pc-top{display:flex;align-items:center;justify-content:space-between;padding-bottom:14px}
+  .pc-logo{height:38px;width:auto;display:block}
+  .pc-logo-fallback{font-family:'Playfair Display',serif;font-size:16px;font-weight:700}
+  .pc-fca{font-size:10px;opacity:.7;text-align:right;line-height:1.6}
+  .pc-stripe{height:4px;background:#00AEC7}
+  .pc-meta{
+    background:#003870;
+    display:flex;
+    align-items:baseline;
+    gap:0;
+    padding:10px 24px;
+    margin-bottom:16px;
+  }
+  .pc-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:#fff;margin-right:24px}
+  .pc-for{font-size:12px;color:rgba(255,255,255,.8)}
+  .pc-date{font-size:11px;color:rgba(255,255,255,.6);margin-left:auto}
+
+  main{padding:0 16px 16px;max-width:none}
+
+  /* ── Two-column cards ── */
+  .cols{grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+  .col-head{
+    font-size:12px;
+    font-weight:700;
+    color:#004C97;
+    margin-bottom:8px;
+    padding-bottom:6px;
+    border-bottom:2px solid #004C97;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .ch-badge{font-size:10px;padding:2px 7px}
+
+  .arr-card{
+    border:1px solid #D0D0D0;
+    border-radius:5px;
+    margin-bottom:8px;
+    break-inside:avoid;
+  }
+  .arr-hdr{
+    background:#004C97;
+    border-radius:4px 4px 0 0;
+    padding:6px 12px;
+    border-bottom:none;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .arr-num{background:rgba(255,255,255,.25);color:#fff;font-size:10px;width:18px;height:18px}
+  .arr-name{font-size:12px;font-weight:600;color:#fff;padding:0;border:none;background:transparent}
+  .arr-val-wrap{margin-left:auto;display:flex;align-items:center;gap:6px}
+  .arr-val-wrap label{font-size:10px;color:rgba(255,255,255,.7)}
+  .val-pfx{color:rgba(255,255,255,.8);left:6px;font-size:11px}
+  .val-input{
+    font-size:12px;font-weight:600;color:#fff;
+    width:90px;padding:2px 4px 2px 14px;
+    border:none;background:transparent;text-align:right;
+  }
+
+  .arr-body{padding:8px 12px}
+  .cr{padding:4px 0;border-bottom:1px solid #f0f0f0}
+  .cr:last-of-type{border-bottom:none}
+  .cr-lbl{font-size:11px;color:#333}
+  .cr-lbl small{font-size:9.5px;color:#888}
+  .ci input[type="number"]{
+    width:44px;font-size:11px;font-weight:500;
+    padding:0;border:none;background:transparent;text-align:right;color:#333;
+  }
+  .ci .u{font-size:10px;color:#888}
+  .ci .ap{font-size:11px;color:#333;width:52px;font-weight:500}
+
+  /* Hide the select, show a printed text label instead */
+  .adv-sel{display:none !important}
+  .adv-mode-print{display:inline !important}
+
+  .adv-row{padding:4px 0}
+  .adv-lbl{font-size:11px;color:#333}
+  .adv-lbl small{font-size:9.5px;color:#888}
+  .adv-num{
+    width:44px;font-size:11px;font-weight:500;
+    padding:0;border:none;background:transparent;text-align:right;color:#333;
+    height:auto;
+  }
+  .adv-ap{font-size:11px;color:#333;font-weight:500}
+
+  .card-tot{
+    margin-top:8px;padding:7px 0 0;
+    border-top:2px solid #004C97;
+  }
+  .card-tot.rec{border-top-color:#00AEC7}
+  .ct-lbl{font-size:9.5px;letter-spacing:.06em}
+  .ct-val{font-size:16px}
   .ct-pct{font-size:11px}
-  .ct-bk{font-size:10px}
-  .grand-bar{margin-bottom:12px;break-inside:avoid;border:1px solid #ccc;border-radius:5px}
-  .grand-half{padding:11px 16px}
-  .grand-val{font-size:22px}
-  .grand-pct,.grand-sub{font-size:11px}
-  .sv-bar{margin-bottom:12px;break-inside:avoid;padding:13px 18px;gap:18px}
-  .sv-val{font-size:20px}
-  .sv-note{font-size:11px}
-  input{-webkit-appearance:none;appearance:none}
+  .ct-bk{font-size:9.5px;color:#888;margin-top:2px}
+
+  /* ── Grand totals bar ── */
+  .grand-bar{
+    margin-bottom:12px;
+    break-inside:avoid;
+    border:none;
+    border-radius:6px;
+    overflow:hidden;
+  }
+  .grand-inner{grid-template-columns:1fr 1fr}
+  .grand-div{display:none}
+  .grand-half.cur{
+    background:#004C97;color:#fff;
+    border-left:none;padding:14px 20px;
+  }
+  .grand-half.rec{
+    background:#00AEC7;color:#fff;
+    border-left:none;padding:14px 20px;
+  }
+  .grand-lbl{font-size:9.5px;opacity:.8;letter-spacing:.07em;margin-bottom:4px;color:#fff}
+  .grand-val.cur,.grand-val.rec{color:#fff;font-size:26px}
+  .grand-pct{color:rgba(255,255,255,.8);font-size:12px}
+  .grand-sub{color:rgba(255,255,255,.7);font-size:10.5px;margin-top:3px}
+
+  /* ── Savings banner ── */
+  .sv-bar{
+    margin-bottom:0;
+    break-inside:avoid;
+    padding:16px 20px;
+    gap:28px;
+  }
+  .sv-bar.sv-saving{background:#eef7f1;border:1px solid #b2dfcb;border-left:4px solid #1a7a4a}
+  .sv-bar.sv-cost{background:#f5f5f5;border:1px solid #D0D0D0;border-left:4px solid #888}
+  .sv-lbl{font-size:9.5px;letter-spacing:.07em}
+  .sv-val{font-size:24px}
+  .sv-div{height:40px;background:#D0D0D0}
+  .sv-note{font-size:11px;line-height:1.6}
+
+  /* ── Footer ── */
+  footer{
+    display:block !important;
+    background:#004C97;
+    color:rgba(255,255,255,.65);
+    font-size:9.5px;
+    text-align:center;
+    padding:10px 24px;
+    margin-top:14px;
+  }
+  footer strong{color:rgba(255,255,255,.9)}
+
+  /* Browser print chrome hint */
+  body::before{
+    content:'Tip: disable browser headers/footers in print settings for best results';
+    display:none;
+  }
+
+  input,select{-webkit-appearance:none;appearance:none}
 }
 </style>
 </head>
@@ -195,7 +318,8 @@ input[type="number"]{-moz-appearance:textfield}
 <!-- Print-only cover strip -->
 <div class="print-cover" id="printCover">
   <div class="pc-top">
-    <div class="pc-firm">Annetts &amp; Orchard Ltd</div>
+    <img src="logo.png" class="pc-logo" alt="Annetts &amp; Orchard" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+    <span class="pc-logo-fallback" style="display:none">Annetts &amp; Orchard Ltd</span>
     <div class="pc-fca">Authorised and regulated by the Financial Conduct Authority<br>FCA No. 820272 &middot; Salisbury, Wiltshire</div>
   </div>
   <div class="pc-stripe"></div>
@@ -351,6 +475,7 @@ function buildCard(arr) {
           <option value="pct">%</option>
           <option value="gbp">GBP</option>
         </select>
+        <span class="adv-mode-print" id="amode-print-${arr.id}">%</span>
         <input type="number" class="adv-num" id="adv-${arr.id}" value="${arr.advice}" step="0.01" min="0">
         <span class="adv-ap" id="adv-ap-${arr.id}"></span>
       </div>
@@ -411,6 +536,8 @@ function setMode(id, mode) {
   arr.adviceMode = mode;
   const sel = $('amode-' + id);
   if (sel) sel.value = mode;
+  const printLbl = $('amode-print-' + id);
+  if (printLbl) printLbl.textContent = mode === 'pct' ? '%' : '£';
   const inp = $('adv-' + id);
   const fv  = parseFloat($('val-' + id)?.value) || 0;
   if (mode === 'pct') {
